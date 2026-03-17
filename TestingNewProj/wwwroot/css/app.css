@@ -16,19 +16,25 @@
     margin: 0;
     padding: 0;
 }
-
 body {
-    font-family: 'Georgia', serif;
+    font-family: 'Space Grotesk', sans-serif;
     background-color: var(--cream);
     color: var(--text);
 }
 
+h1, h2, h3, h4 {
+    font-family: 'Space Grotesk', sans-serif;
+}
+* {
+    font-family: 'Space Grotesk', sans-serif;
+    text-transform:lowercase!important;
+}
 a {
     text-decoration: none;
     color: inherit;
 }
 html, body {
-    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-family: 'Space Grotesk', sans-serif;
 }
 
 h1:focus {
