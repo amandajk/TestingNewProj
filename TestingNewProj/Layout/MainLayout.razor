@@ -1,16 +1,79 @@
 ﻿@inherits LayoutComponentBase
-<div class="page">
-    <div class="sidebar">
-        <NavMenu />
-    </div>
+@inject NavigationManager Nav
 
-    <main>
-        <div class="top-row px-4">
-            <a href="https://learn.microsoft.com/aspnet/core/" target="_blank">About</a>
+<div class="site-wrapper @(menuOpen ? "menu-open" : "")">
+
+    <!-- Top Navigation Bar -->
+    <header class="topbar">
+        <div class="topbar-inner">
+
+            <!-- Hamburger (mobile) -->
+            <button class="hamburger" @onclick="ToggleMenu" aria-label="Menu">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+
+            <!-- Logo / Site Name -->
+            <a href="/" class="site-logo">Sweet Crumbs</a>
+
+            <!-- Desktop Nav Links -->
+            <nav class="desktop-nav">
+                <a href="/" class="nav-link">Home</a>
+                <a href="/shop" class="nav-link">Shop</a>
+                <a href="/custom-orders" class="nav-link">Custom Orders</a>
+                <a href="/gallery" class="nav-link">Gallery</a>
+                <a href="/about" class="nav-link">About</a>
+                <a href="/contact" class="nav-link">Contact</a>
+            </nav>
+
+            <!-- Cart Icon -->
+            <a href="/checkout" class="cart-btn" aria-label="Checkout">
+                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24"
+                     fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z" />
+                    <line x1="3" y1="6" x2="21" y2="6" />
+                    <path d="M16 10a4 4 0 0 1-8 0" />
+                </svg>
+                @if (CartCount > 0)
+                {
+                    <span class="cart-badge">@CartCount</span>
+                }
+            </a>
+
         </div>
+    </header>
 
-        <article class="content px-4">
-            @Body
-        </article>
+    <!-- Mobile Slide-out Menu -->
+    <div class="mobile-overlay" @onclick="CloseMenu"></div>
+    <nav class="mobile-nav">
+        <button class="mobile-nav-close" @onclick="CloseMenu" aria-label="Close menu">✕</button>
+        <a href="/" class="mobile-nav-link" @onclick="CloseMenu">Home</a>
+        <a href="/shop" class="mobile-nav-link" @onclick="CloseMenu">Shop</a>
+        <a href="/custom-orders" class="mobile-nav-link" @onclick="CloseMenu">Custom Orders</a>
+        <a href="/gallery" class="mobile-nav-link" @onclick="CloseMenu">Gallery</a>
+        <a href="/about" class="mobile-nav-link" @onclick="CloseMenu">About</a>
+        <a href="/contact" class="mobile-nav-link" @onclick="CloseMenu">Contact</a>
+    </nav>
+
+    <!-- Page Content -->
+    <main class="page-content">
+        @Body
     </main>
+
+    <!-- Footer -->
+    <footer class="site-footer">
+        <p>© @DateTime.Now.Year Sweet Crumbs. All rights reserved.</p>
+    </footer>
+
 </div>
+
+@code {
+    private bool menuOpen = false;
+
+    // This will be wired to a cart service later
+    private int CartCount = 0;
+
+    private void ToggleMenu() => menuOpen = !menuOpen;
+    private void CloseMenu() => menuOpen = false;
+}

@@ -1,3 +1,32 @@
+﻿/* ── Color Palette ── */
+:root {
+    --cream: #faf7f2;
+    --blush: #f2e0d9;
+    --sage: #c8d5c0;
+    --taupe: #b5a99a;
+    --brown: #7c6355;
+    --text: #3d302a;
+    --text-light: #7c6355;
+    --white: #ffffff;
+    --topbar-h: 64px;
+}
+
+*, *::before, *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: 'Georgia', serif;
+    background-color: var(--cream);
+    color: var(--text);
+}
+
+a {
+    text-decoration: none;
+    color: inherit;
+}
 html, body {
     font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
 }
