@@ -32,14 +32,26 @@ a {
 
 /* ── Topbar ── */
 .topbar {
-    position: sticky;
+    position: fixed;
     top: 0;
+    left: 0;
+    right: 0;
     z-index: 100;
     height: var(--topbar-h);
-    background-color: var(--white);
-    border-bottom: 1px solid var(--blush);
-    box-shadow: 0 1px 6px rgba(0,0,0,0.05);
+    transition: background 0.35s ease, border-color 0.35s ease, box-shadow 0.35s ease;
 }
+
+    .topbar.transparent {
+        background: transparent;
+        border-bottom: 1px solid rgba(255,255,255,0.15);
+        box-shadow: none;
+    }
+
+    .topbar.scrolled {
+        background: var(--white);
+        border-bottom: 1px solid var(--blush);
+        box-shadow: 0 1px 6px rgba(0,0,0,0.05);
+    }
 
 .topbar-inner {
     max-width: 1100px;
@@ -53,9 +65,9 @@ a {
 
 /* ── Logo ── */
 .site-logo {
-    font-family: 'Space Grotesk', sans-serif;
+    font-family: 'Bodoni Moda', serif;
     font-size: 1.35rem;
-    font-weight: 800;
+    font-weight: 600;
     color: var(--brown);
     letter-spacing: 0.03em;
     margin-right: auto;
@@ -68,12 +80,12 @@ a {
 }
 
     .desktop-nav .nav-link {
-        font-family: 'Space Grotesk', sans-serif!important;
-
+        font-family: 'Space Grotesk', sans-serif;
         font-size: 0.85rem;
-        font-weight: 800;
+        font-weight: 600;
         color: var(--text-light);
         letter-spacing: 0.06em;
+        text-transform: uppercase;
         transition: color 0.2s;
     }
 
@@ -86,14 +98,21 @@ a {
     position: relative;
     display: flex;
     align-items: center;
-    color: var(--brown);
     margin-left: 1rem;
-    transition: color 0.2s;
+    transition: color 0.35s ease;
 }
 
-    .cart-btn:hover {
-        color: var(--text);
-    }
+.transparent .cart-btn {
+    color: #fff;
+}
+
+.scrolled .cart-btn {
+    color: var(--brown);
+}
+
+.cart-btn:hover {
+    opacity: 0.75;
+}
 
 .cart-badge {
     position: absolute;
@@ -197,7 +216,7 @@ a {
     max-width: 1100px;
     width: 100%;
     margin: 0 auto;
-    padding: 2rem 1.25rem;
+    padding: 0 1.25rem;
 }
 
 /* ── Footer ── */
