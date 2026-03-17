@@ -1,22 +1,14 @@
 ﻿@page "/"
+@inject IJSRuntime JS
 <PageTitle>Home</PageTitle>
-@code {
-    private List<Product> FeaturedItems = new()
-    {
-        new("Vanilla Dream Cake", "Light vanilla sponge with buttercream", "$48", "images/cake1.jpg"),
-        new("Chocolate Fudge", "Rich chocolate layers with ganache", "$52", "images/cake2.jpg"),
-        new("Strawberry Layer", "Fresh strawberries and cream", "$46", "images/cake3.jpg"),
-    };
 
-    private record Product(string Name, string Description, string Price, string Image);
-}
 <!-- ── Hero ── -->
 <section class="hero">
     <video autoplay muted loop playsinline class="hero-video">
         <source src="videos/hero.mp4" type="video/mp4" />
     </video>
     <div class="hero-overlay"></div>
-    <div class="hero-content">
+    <div class="hero-content hero-animate">
         <h1 class="hero-title">Your Bakery Name</h1>
         <p class="hero-tagline">Your tagline goes here</p>
     </div>
@@ -24,12 +16,12 @@
 
 <!-- ── Featured Products ── -->
 <section class="section featured">
-    <h2 class="section-title">Our Favorites</h2>
-    <p class="section-subtitle">A taste of what we make</p>
+    <h2 class="section-title fade-up">Our Favorites</h2>
+    <p class="section-subtitle fade-up">A taste of what we make</p>
     <div class="product-grid">
         @foreach (var item in FeaturedItems)
         {
-            <div class="product-card">
+            <div class="product-card fade-up">
                 <div class="product-img-wrap">
                     <img src="@item.Image" alt="@item.Name" class="product-img" />
                 </div>
@@ -46,10 +38,10 @@
 <!-- ── About Blurb ── -->
 <section class="section about-blurb">
     <div class="about-blurb-inner">
-        <div class="about-blurb-img-wrap">
+        <div class="about-blurb-img-wrap fade-up">
             <img src="images/about-placeholder.jpg" alt="About us" class="about-blurb-img" />
         </div>
-        <div class="about-blurb-text">
+        <div class="about-blurb-text fade-up">
             <h2>Made with love, baked fresh daily</h2>
             <p>
                 Lorem ipsum dolor sit amet, consectetur adipiscing elit.
@@ -62,7 +54,22 @@
     </div>
 </section>
 
+@code {
+    private List<Product> FeaturedItems = new()
+    {
+        new("Vanilla Dream Cake", "Light vanilla sponge with buttercream", "$48", "images/cake1.jpg"),
+        new("Chocolate Fudge", "Rich chocolate layers with ganache", "$52", "images/cake2.jpg"),
+        new("Strawberry Layer", "Fresh strawberries and cream", "$46", "images/cake3.jpg"),
+    };
 
+    private record Product(string Name, string Description, string Price, string Image);
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+            await JS.InvokeVoidAsync("initScrollAnimations");
+    }
+}
 
 <style>
     /* ── Hero ── */

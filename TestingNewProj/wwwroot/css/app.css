@@ -29,6 +29,35 @@ h1, h2, h3, h4 {
     font-family: 'Space Grotesk', sans-serif;
     text-transform:lowercase!important;
 }
+/* ── Scroll Animations ── */
+.fade-up {
+    opacity: 0;
+    transform: translateY(28px);
+    transition: opacity 0.65s ease, transform 0.65s ease;
+}
+
+    .fade-up.visible {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+/* ── Hero Animate (on load) ── */
+.hero-animate {
+    animation: heroFadeUp 1s ease 0.3s forwards;
+    opacity: 0;
+}
+
+@keyframes heroFadeUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
 a {
     text-decoration: none;
     color: inherit;
