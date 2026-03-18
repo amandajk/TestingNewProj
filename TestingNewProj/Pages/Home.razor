@@ -15,6 +15,23 @@
     </div>
 </section>
 
+<!-- ── Marquee Ticker ── -->
+<div class="marquee-wrapper">
+    <div class="marquee-track">
+        @for (int i = 0; i < 4; i++)
+        {
+            <span class="marquee-item">CUSTOM CAKES</span>
+            <span class="marquee-dot">·</span>
+            <span class="marquee-item">FRESH DAILY</span>
+            <span class="marquee-dot">·</span>
+            <span class="marquee-item">ORDER ONLINE</span>
+            <span class="marquee-dot">·</span>
+            <span class="marquee-item">URLGREY BAKERY</span>
+            <span class="marquee-dot">·</span>
+        }
+    </div>
+</div>
+
 <!-- ── Featured Products ── -->
 <section class="section featured">
     <h2 class="section-title fade-up">Our Favorites</h2>
@@ -22,33 +39,9 @@
     <HorizontalGallery Items="FeaturedItems" />
 </section>
 
-<!-- ── About Blurb ── -->
-<section class="section about-blurb">
-    <div class="about-blurb-inner">
-        <div class="about-blurb-img-wrap fade-up">
-            <img src="images/about-placeholder.jpg" alt="About us" class="about-blurb-img" />
-        </div>
-        <div class="about-blurb-text fade-up">
-            <h2>Made with love, baked fresh daily</h2>
-            <p>
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-              
-            </p>
-            <a href="/about" class="btn-outline">Origins</a>
-        </div>
-    </div>
-</section>
-
 @code {
     private List<HorizontalGallery.GalleryItem> FeaturedItems = new()
     {
-        new("Vanilla Dream Cake", "images/cake1.jpg", "-normal"),
-        new("Chocolate Fudge",    "images/cake2.jpg", "-big"),
-        new("Strawberry Layer",   "images/cake3.jpg", "-small"),
-        new("Lemon Drizzle",      "images/cake4.jpg", "-normal"),
-        new("Carrot Cake",        "images/cake5.jpg", "-big"),
-        new("Red Velvet",         "images/cake6.jpg", "-small"),
         new("Vanilla Dream Cake", "images/cake1.jpg", "-normal"),
         new("Chocolate Fudge",    "images/cake2.jpg", "-big"),
         new("Strawberry Layer",   "images/cake3.jpg", "-small"),
@@ -65,6 +58,7 @@
 }
 
 <style>
+    /* ── Hero ── */
     .hero {
         position: relative;
         width: 100vw;
@@ -116,7 +110,56 @@
         opacity: 0.9;
     }
 
-    .section { padding: 5rem 0; }
+    /* ── Marquee ── */
+    .marquee-wrapper {
+        width: 100vw;
+        margin-left: calc(-50vw + 50%);
+        overflow: hidden;
+        border-top: 1px solid var(--blush);
+        border-bottom: 1px solid var(--blush);
+        background: var(--white);
+        padding: 0.85rem 0;
+    }
+
+    .marquee-track {
+        display: flex;
+        align-items: center;
+        gap: 1.5rem;
+        width: max-content;
+        animation: marqueeScroll 18s linear infinite;
+    }
+
+    .marquee-wrapper:hover .marquee-track {
+        animation-play-state: paused;
+    }
+
+    .marquee-item {
+        font-size: 0.75rem;
+        font-weight: 700;
+        letter-spacing: 0.18em;
+        color: var(--brown);
+        white-space: nowrap;
+    }
+
+    .marquee-dot {
+        color: var(--taupe);
+        font-size: 0.75rem;
+    }
+
+    @@keyframes marqueeScroll {
+        from {
+            transform: translateX(0);
+        }
+
+        to {
+            transform: translateX(-50%);
+        }
+    }
+
+    /* ── Sections ── */
+    .section {
+        padding: 5rem 0;
+    }
 
     .section-title {
         font-size: 2.2rem;
@@ -132,71 +175,5 @@
         font-size: 1rem;
         margin-bottom: 3rem;
         letter-spacing: 0.05em;
-    }
-
-    .about-blurb {
-        background: var(--blush);
-        width: 100vw;
-        margin-left: calc(-50vw + 50%);
-        padding: 5rem 1.25rem;
-    }
-
-    .about-blurb-inner {
-        max-width: 1100px;
-        margin: 0 auto;
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 4rem;
-        align-items: center;
-    }
-
-    .about-blurb-img-wrap {
-        aspect-ratio: 4 / 3;
-        overflow: hidden;
-        border-radius: 4px;
-        background: var(--taupe);
-    }
-
-    .about-blurb-img {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-    }
-
-    .about-blurb-text h2 {
-        font-size: 2rem;
-        font-weight: 700;
-        margin-bottom: 1.25rem;
-        line-height: 1.2;
-    }
-
-    .about-blurb-text p {
-        color: var(--text-light);
-        line-height: 1.8;
-        margin-bottom: 2rem;
-        font-size: 0.95rem;
-    }
-
-    .btn-outline {
-        display: inline-block;
-        border: 1.5px solid var(--brown);
-        color: var(--brown);
-        padding: 0.7rem 1.75rem;
-        font-size: 0.85rem;
-        letter-spacing: 0.08em;
-        text-transform: uppercase;
-        transition: background 0.2s, color 0.2s;
-    }
-
-    .btn-outline:hover {
-        background: var(--brown);
-        color: #fff;
-    }
-
-    @@media (max-width: 768px) {
-        .about-blurb-inner {
-            grid-template-columns: 1fr;
-            gap: 2rem;
-        }
     }
 </style>
