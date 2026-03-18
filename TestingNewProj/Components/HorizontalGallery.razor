@@ -19,7 +19,6 @@
 
 @code {
     [Parameter] public List<GalleryItem> Items { get; set; } = new();
-
     private ElementReference galleryRef;
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
@@ -35,7 +34,9 @@
 
     public record GalleryItem(string Name, string Image, string Size);
 }
+
 <style>
+    /* ── Desktop: horizontal scroll ── */
     .gallery-scroll-wrapper {
         width: 100vw;
         margin-left: calc(-50vw + 50%);
@@ -45,8 +46,7 @@
         scrollbar-width: none;
         -ms-overflow-style: none;
         cursor: grab;
-        -webkit-overflow-scrolling: touch;
-        touch-action: pan-x;
+        touch-action: none;
     }
 
         .gallery-scroll-wrapper::-webkit-scrollbar {
@@ -137,25 +137,39 @@
         transform: translateY(0);
     }
 
+    /* ── Mobile: vertical stack ── */
     @@media (max-width: 768px) {
         .gallery-scroll-wrapper {
-            height: 50vh;
-            touch-action: pan-y;
+            overflow-x: hidden;
+            overflow-y: visible;
+            height: auto;
+            cursor: default;
+            touch-action: auto;
         }
 
-        .gallery-item.-big {
-            width: 28vh;
-            height: 40vh;
+        .gallery-track {
+            flex-direction: column;
+            align-items: stretch;
+            width: 100%;
+            height: auto;
+            padding: 1rem 1.25rem;
+            gap: 1rem;
         }
 
-        .gallery-item.-normal {
-            width: 22vh;
-            height: 32vh;
-        }
-
+        .gallery-item.-big,
+        .gallery-item.-normal,
         .gallery-item.-small {
-            width: 18vh;
-            height: 26vh;
+            width: 100%;
+            height: 56vw;
+        }
+        /* on mobile show name always, no hover needed */
+        .gallery-overlay {
+            background: rgba(30, 20, 15, 0.35);
+        }
+
+        .gallery-name {
+            opacity: 1;
+            transform: translateY(0);
         }
     }
 </style>

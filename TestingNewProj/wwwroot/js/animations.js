@@ -34,20 +34,16 @@ window.initHorizontalGallery = (el) => {
     if (!el) return;
 
     const items = Array.from(el.querySelectorAll('.gallery-item'));
-
     const speeds = [0.4, 0.8, 1.4, 0.6, 1.0, 1.6];
-    items.forEach((item, i) => {
-        item._parallaxSpeed = speeds[i % speeds.length];
-    });
-
-    let scrollPos = 0;
-    let targetScroll = 0;
-    let rafId = null;
-    const lerp = (a, b, t) => a + (b - a) * t;
+    items.forEach((item, i) => { item._parallaxSpeed = speeds[i % speeds.length]; });
 
     const isMobile = () => window.matchMedia('(max-width: 768px)').matches;
 
+    let scrollPos = 0, targetScroll = 0, rafId = null;
+    const lerp = (a, b, t) => a + (b - a) * t;
+
     const applyParallax = () => {
+        if (isMobile()) return; // skip parallax on mobile vertical layout
         items.forEach(item => {
             const extra = scrollPos * (item._parallaxSpeed - 1) * 0.18;
             item.style.transform = `translateY(${extra}px)`;
@@ -55,11 +51,7 @@ window.initHorizontalGallery = (el) => {
     };
 
     const tick = () => {
-        if (isMobile()) {
-            // on mobile let browser scroll natively, just sync parallax
-            scrollPos = el.scrollLeft;
-            applyParallax();
-        } else {
+        if (!isMobile()) {
             scrollPos = lerp(scrollPos, targetScroll, 0.08);
             el.scrollLeft = scrollPos;
             applyParallax();
@@ -80,7 +72,7 @@ window.initHorizontalGallery = (el) => {
 
     // click + drag (desktop only)
     let isDown = false, startX, scrollStart;
-    const onMouseDown = (e) => { isDown = true; startX = e.pageX; scrollStart = targetScroll; };
+    const onMouseDown = (e) => { if (isMobile()) return; isDown = true; startX = e.pageX; scrollStart = targetScroll; };
     const onMouseUp = () => { isDown = false; };
     const onMouseMove = (e) => {
         if (!isDown || isMobile()) return;
