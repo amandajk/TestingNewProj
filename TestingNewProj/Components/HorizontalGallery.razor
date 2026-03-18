@@ -40,12 +40,13 @@
         width: 100vw;
         margin-left: calc(-50vw + 50%);
         overflow-x: auto;
-        touch-action:none;
         overflow-y: hidden;
         height: 70vh;
         scrollbar-width: none;
         -ms-overflow-style: none;
         cursor: grab;
+        -webkit-overflow-scrolling: touch;
+        touch-action: pan-x;
     }
 
         .gallery-scroll-wrapper::-webkit-scrollbar {

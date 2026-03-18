@@ -33,18 +33,19 @@ window.disposeNavScroll = () => {
 window.initHorizontalGallery = (el) => {
     if (!el) return;
 
-    const track = el.querySelector('.gallery-track');
     const items = Array.from(el.querySelectorAll('.gallery-item'));
 
-    // assign parallax speeds per item — alternates between slow/medium/fast
     const speeds = [0.4, 0.8, 1.4, 0.6, 1.0, 1.6];
     items.forEach((item, i) => {
         item._parallaxSpeed = speeds[i % speeds.length];
-        item._parallaxOffset = 0;
     });
 
     let scrollPos = 0;
+    let targetScroll = 0;
     let rafId = null;
+    const lerp = (a, b, t) => a + (b - a) * t;
+
+    const isMobile = () => window.matchMedia('(max-width: 768px)').matches;
 
     const applyParallax = () => {
         items.forEach(item => {
@@ -53,20 +54,23 @@ window.initHorizontalGallery = (el) => {
         });
     };
 
-    // smooth scroll with lerp
-    let targetScroll = 0;
-    const lerp = (a, b, t) => a + (b - a) * t;
-
     const tick = () => {
-        scrollPos = lerp(scrollPos, targetScroll, 0.08);
-        el.scrollLeft = scrollPos;
-        applyParallax();
+        if (isMobile()) {
+            // on mobile let browser scroll natively, just sync parallax
+            scrollPos = el.scrollLeft;
+            applyParallax();
+        } else {
+            scrollPos = lerp(scrollPos, targetScroll, 0.08);
+            el.scrollLeft = scrollPos;
+            applyParallax();
+        }
         rafId = requestAnimationFrame(tick);
     };
     rafId = requestAnimationFrame(tick);
 
-    // wheel hijack
+    // wheel hijack (desktop only)
     const onWheel = (e) => {
+        if (isMobile()) return;
         const atLeft = targetScroll <= 0;
         const atRight = targetScroll + el.clientWidth >= el.scrollWidth - 1;
         if ((e.deltaY < 0 && atLeft) || (e.deltaY > 0 && atRight)) return;
@@ -74,25 +78,14 @@ window.initHorizontalGallery = (el) => {
         targetScroll = Math.max(0, Math.min(el.scrollWidth - el.clientWidth, targetScroll + e.deltaY * 1.5));
     };
 
-    // click + drag (mouse)
+    // click + drag (desktop only)
     let isDown = false, startX, scrollStart;
     const onMouseDown = (e) => { isDown = true; startX = e.pageX; scrollStart = targetScroll; };
     const onMouseUp = () => { isDown = false; };
     const onMouseMove = (e) => {
-        if (!isDown) return;
+        if (!isDown || isMobile()) return;
         e.preventDefault();
         targetScroll = Math.max(0, Math.min(el.scrollWidth - el.clientWidth, scrollStart - (e.pageX - startX)));
-    };
-
-    // touch support
-    let touchStartX = 0, touchScrollStart = 0;
-    const onTouchStart = (e) => { touchStartX = e.touches[0].pageX; touchScrollStart = targetScroll; };
-    const onTouchMove = (e) => {
-        const dx = touchStartX - e.touches[0].pageX;
-        targetScroll = Math.max(0, Math.min(el.scrollWidth - el.clientWidth, touchScrollStart + dx));
-        // only prevent default if scrolling more horizontally than vertically
-        const dy = Math.abs(e.touches[0].pageY - e.touches[0].pageY);
-        if (Math.abs(dx) > 5) e.preventDefault();
     };
 
     el.addEventListener('wheel', onWheel, { passive: false });
@@ -100,8 +93,6 @@ window.initHorizontalGallery = (el) => {
     el.addEventListener('mouseup', onMouseUp);
     el.addEventListener('mouseleave', onMouseUp);
     el.addEventListener('mousemove', onMouseMove);
-    el.addEventListener('touchstart', onTouchStart, { passive: true });
-    el.addEventListener('touchmove', onTouchMove, { passive: false });
 
     el._galleryCleanup = () => {
         cancelAnimationFrame(rafId);
@@ -110,8 +101,6 @@ window.initHorizontalGallery = (el) => {
         el.removeEventListener('mouseup', onMouseUp);
         el.removeEventListener('mouseleave', onMouseUp);
         el.removeEventListener('mousemove', onMouseMove);
-        el.removeEventListener('touchstart', onTouchStart);
-        el.removeEventListener('touchmove', onTouchMove);
     };
 };
 
