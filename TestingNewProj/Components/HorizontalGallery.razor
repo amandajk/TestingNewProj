@@ -1,0 +1,158 @@
+﻿@inject IJSRuntime JS
+@implements IAsyncDisposable
+
+<div class="gallery-scroll-wrapper" @ref="galleryRef">
+    <div class="gallery-track">
+        @foreach (var item in Items)
+        {
+            <div class="gallery-item @item.Size">
+                <div class="gallery-img-wrap">
+                    <img src="@item.Image" alt="@item.Name" class="gallery-img" />
+                    <div class="gallery-overlay">
+                        <span class="gallery-name">@item.Name</span>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+@code {
+    [Parameter] public List<GalleryItem> Items { get; set; } = new();
+
+    private ElementReference galleryRef;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+            await JS.InvokeVoidAsync("initHorizontalGallery", galleryRef);
+    }
+
+    public async ValueTask DisposeAsync()
+    {
+        await JS.InvokeVoidAsync("disposeHorizontalGallery", galleryRef);
+    }
+
+    public record GalleryItem(string Name, string Image, string Size);
+}
+<style>
+    .gallery-scroll-wrapper {
+        width: 100vw;
+        margin-left: calc(-50vw + 50%);
+        overflow-x: auto;
+        overflow-y: hidden;
+        height: 70vh;
+        scrollbar-width: none;
+        -ms-overflow-style: none;
+        cursor: grab;
+    }
+
+        .gallery-scroll-wrapper::-webkit-scrollbar {
+            display: none;
+        }
+
+        .gallery-scroll-wrapper:active {
+            cursor: grabbing;
+        }
+
+    .gallery-track {
+        display: flex;
+        align-items: center;
+        gap: 1.5rem;
+        padding: 2rem 4rem;
+        height: 100%;
+        width: max-content;
+    }
+
+    .gallery-item {
+        flex-shrink: 0;
+        position: relative;
+    }
+
+        .gallery-item.-big {
+            width: 38vh;
+            height: 55vh;
+        }
+
+        .gallery-item.-normal {
+            width: 28vh;
+            height: 42vh;
+        }
+
+        .gallery-item.-small {
+            width: 22vh;
+            height: 32vh;
+        }
+
+    .gallery-img-wrap {
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+        position: relative;
+        border-radius: 2px;
+        background: var(--blush);
+    }
+
+    .gallery-img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.5s ease;
+        display: block;
+    }
+
+    .gallery-overlay {
+        position: absolute;
+        inset: 0;
+        background: rgba(30, 20, 15, 0);
+        display: flex;
+        align-items: flex-end;
+        padding: 1.25rem;
+        transition: background 0.35s ease;
+    }
+
+    .gallery-name {
+        color: #fff;
+        font-size: 0.95rem;
+        font-weight: 600;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        opacity: 0;
+        transform: translateY(6px);
+        transition: opacity 0.35s ease, transform 0.35s ease;
+    }
+
+    .gallery-img-wrap:hover .gallery-img {
+        transform: scale(1.06);
+    }
+
+    .gallery-img-wrap:hover .gallery-overlay {
+        background: rgba(30, 20, 15, 0.45);
+    }
+
+    .gallery-img-wrap:hover .gallery-name {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    @@media (max-width: 768px) {
+        .gallery-scroll-wrapper {
+            height: 50vh;
+        }
+
+        .gallery-item.-big {
+            width: 28vh;
+            height: 40vh;
+        }
+
+        .gallery-item.-normal {
+            width: 22vh;
+            height: 32vh;
+        }
+
+        .gallery-item.-small {
+            width: 18vh;
+            height: 26vh;
+        }
+    }
+</style>
