@@ -39,28 +39,43 @@ window.initHorizontalGallery = (el) => {
 
     const isMobile = () => window.matchMedia('(max-width: 768px)').matches;
 
-    let scrollPos = 0, targetScroll = 0, rafId = null;
+    // ── Mobile: vertical parallax via page scroll ──
+    let mobileRafId = null;
+    let lastPageScroll = window.scrollY;
+
+    const applyMobileParallax = () => {
+        const pageScroll = window.scrollY;
+        const rect = el.getBoundingClientRect();
+        const centerOffset = rect.top + rect.height / 2 - window.innerHeight / 2;
+
+        items.forEach((item, i) => {
+            const speed = [0.2, 0.6, 1.2, 0.4, 1.4, 1.8];
+            const shift = centerOffset * (speed - 1) * 0.25;
+            item.style.transform = `translateY(${shift}px)`;
+        });
+
+        lastPageScroll = pageScroll;
+        mobileRafId = requestAnimationFrame(applyMobileParallax);
+    };
+
+    // ── Desktop: horizontal scroll with lerp ──
+    let scrollPos = 0, targetScroll = 0, desktopRafId = null;
     const lerp = (a, b, t) => a + (b - a) * t;
 
-    const applyParallax = () => {
-        if (isMobile()) return; // skip parallax on mobile vertical layout
+    const applyDesktopParallax = () => {
         items.forEach(item => {
             const extra = scrollPos * (item._parallaxSpeed - 1) * 0.18;
             item.style.transform = `translateY(${extra}px)`;
         });
     };
 
-    const tick = () => {
-        if (!isMobile()) {
-            scrollPos = lerp(scrollPos, targetScroll, 0.08);
-            el.scrollLeft = scrollPos;
-            applyParallax();
-        }
-        rafId = requestAnimationFrame(tick);
+    const desktopTick = () => {
+        scrollPos = lerp(scrollPos, targetScroll, 0.08);
+        el.scrollLeft = scrollPos;
+        applyDesktopParallax();
+        desktopRafId = requestAnimationFrame(desktopTick);
     };
-    rafId = requestAnimationFrame(tick);
 
-    // wheel hijack (desktop only)
     const onWheel = (e) => {
         if (isMobile()) return;
         const atLeft = targetScroll <= 0;
@@ -70,7 +85,6 @@ window.initHorizontalGallery = (el) => {
         targetScroll = Math.max(0, Math.min(el.scrollWidth - el.clientWidth, targetScroll + e.deltaY * 1.5));
     };
 
-    // click + drag (desktop only)
     let isDown = false, startX, scrollStart;
     const onMouseDown = (e) => { if (isMobile()) return; isDown = true; startX = e.pageX; scrollStart = targetScroll; };
     const onMouseUp = () => { isDown = false; };
@@ -80,6 +94,29 @@ window.initHorizontalGallery = (el) => {
         targetScroll = Math.max(0, Math.min(el.scrollWidth - el.clientWidth, scrollStart - (e.pageX - startX)));
     };
 
+    // start the right loop based on current mode
+    const startLoops = () => {
+        if (isMobile()) {
+            cancelAnimationFrame(desktopRafId);
+            items.forEach(item => { item.style.transform = ''; }); // reset desktop transforms
+            mobileRafId = requestAnimationFrame(applyMobileParallax);
+        } else {
+            cancelAnimationFrame(mobileRafId);
+            items.forEach(item => { item.style.transform = ''; }); // reset mobile transforms
+            desktopRafId = requestAnimationFrame(desktopTick);
+        }
+    };
+
+    startLoops();
+
+    // handle resize switching between mobile/desktop
+    const onResize = () => {
+        cancelAnimationFrame(mobileRafId);
+        cancelAnimationFrame(desktopRafId);
+        startLoops();
+    };
+    window.addEventListener('resize', onResize);
+
     el.addEventListener('wheel', onWheel, { passive: false });
     el.addEventListener('mousedown', onMouseDown);
     el.addEventListener('mouseup', onMouseUp);
@@ -87,7 +124,9 @@ window.initHorizontalGallery = (el) => {
     el.addEventListener('mousemove', onMouseMove);
 
     el._galleryCleanup = () => {
-        cancelAnimationFrame(rafId);
+        cancelAnimationFrame(mobileRafId);
+        cancelAnimationFrame(desktopRafId);
+        window.removeEventListener('resize', onResize);
         el.removeEventListener('wheel', onWheel);
         el.removeEventListener('mousedown', onMouseDown);
         el.removeEventListener('mouseup', onMouseUp);
