@@ -65,7 +65,6 @@ a {
 
 /* ── Logo ── */
 .site-logo {
-    font-family: 'Bodoni Moda', serif;
     font-size: 1.35rem;
     font-weight: 600;
     color: var(--brown);
