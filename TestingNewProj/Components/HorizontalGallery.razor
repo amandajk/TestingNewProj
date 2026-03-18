@@ -40,6 +40,7 @@
         width: 100vw;
         margin-left: calc(-50vw + 50%);
         overflow-x: auto;
+        touch-action:none;
         overflow-y: hidden;
         height: 70vh;
         scrollbar-width: none;
@@ -138,6 +139,7 @@
     @@media (max-width: 768px) {
         .gallery-scroll-wrapper {
             height: 50vh;
+            touch-action: pan-y;
         }
 
         .gallery-item.-big {

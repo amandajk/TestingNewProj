@@ -74,7 +74,7 @@ window.initHorizontalGallery = (el) => {
         targetScroll = Math.max(0, Math.min(el.scrollWidth - el.clientWidth, targetScroll + e.deltaY * 1.5));
     };
 
-    // click + drag
+    // click + drag (mouse)
     let isDown = false, startX, scrollStart;
     const onMouseDown = (e) => { isDown = true; startX = e.pageX; scrollStart = targetScroll; };
     const onMouseUp = () => { isDown = false; };
@@ -84,11 +84,24 @@ window.initHorizontalGallery = (el) => {
         targetScroll = Math.max(0, Math.min(el.scrollWidth - el.clientWidth, scrollStart - (e.pageX - startX)));
     };
 
+    // touch support
+    let touchStartX = 0, touchScrollStart = 0;
+    const onTouchStart = (e) => { touchStartX = e.touches[0].pageX; touchScrollStart = targetScroll; };
+    const onTouchMove = (e) => {
+        const dx = touchStartX - e.touches[0].pageX;
+        targetScroll = Math.max(0, Math.min(el.scrollWidth - el.clientWidth, touchScrollStart + dx));
+        // only prevent default if scrolling more horizontally than vertically
+        const dy = Math.abs(e.touches[0].pageY - e.touches[0].pageY);
+        if (Math.abs(dx) > 5) e.preventDefault();
+    };
+
     el.addEventListener('wheel', onWheel, { passive: false });
     el.addEventListener('mousedown', onMouseDown);
     el.addEventListener('mouseup', onMouseUp);
     el.addEventListener('mouseleave', onMouseUp);
     el.addEventListener('mousemove', onMouseMove);
+    el.addEventListener('touchstart', onTouchStart, { passive: true });
+    el.addEventListener('touchmove', onTouchMove, { passive: false });
 
     el._galleryCleanup = () => {
         cancelAnimationFrame(rafId);
@@ -97,6 +110,8 @@ window.initHorizontalGallery = (el) => {
         el.removeEventListener('mouseup', onMouseUp);
         el.removeEventListener('mouseleave', onMouseUp);
         el.removeEventListener('mousemove', onMouseMove);
+        el.removeEventListener('touchstart', onTouchStart);
+        el.removeEventListener('touchmove', onTouchMove);
     };
 };
 
