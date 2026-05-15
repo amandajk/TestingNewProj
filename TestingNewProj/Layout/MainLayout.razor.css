@@ -1,4 +1,9 @@
 ﻿/* ── Color Palette ── */
+.nav-link, .mobile-nav-link {
+    font-family: 'Akt', sans-serif!important;
+}
+
+
 :root {
     --cream: #faf7f2;
     --blush: #f2e0d9;
@@ -75,11 +80,11 @@ a {
 /* ── Desktop Nav ── */
 .desktop-nav {
     display: flex;
+        font-family: 'Beth Ellen', cursive;
     gap: 1.75rem;
 }
 
     .desktop-nav .nav-link {
-        font-family: 'Space Grotesk', sans-serif;
         font-size: 0.85rem;
         font-weight: 600;
         color: var(--text-light);

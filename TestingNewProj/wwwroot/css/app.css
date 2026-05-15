@@ -1,12 +1,13 @@
 ﻿
-@font-face {
-    font-family: 'OceansideTypewriter';
-    src: url('../fonts/OceansideTypewriter.ttf') format('truetype');
-    font-weight: normal;
-    font-style: normal;
+body {
+    font-family: 'Beth Ellen', cursive;
+    background-color: var(--cream);
+    color: var(--text);
 }
-.typewriter-text {
-    font-family: 'OceansideTypewriter', 'Courier New', monospace;
+
+h1, h2, h3, h4 {
+    font-family: 'Beth Ellen', cursive;
+    font-weight: 800;
 }
 /* ── Color Palette ── */
 :root {
@@ -26,20 +27,12 @@
     margin: 0;
     padding: 0;
 }
-body {
-    font-family: 'OceansideTypewriter', 'Courier New', monospace;
-    background-color: var(--cream);
-    color: var(--text);
-}
-
 h1, h2, h3, h4 {
-    font-family: 'Space Grotesk', sans-serif;
-    font-weight:800;
+        font-family: 'Beth Ellen', cursive;
+    font-weight: 800;
 }
 * {
-    font-family: 'Space Grotesk', sans-serif;
-    text-transform:lowercase!important;
-
+        font-family: 'Beth Ellen', cursive;
 }
 /* ── Scroll Animations ── */
 .fade-up {
@@ -74,9 +67,7 @@ a {
     text-decoration: none;
     color: inherit;
 }
-html, body {
-    font-family: 'Space Grotesk', sans-serif;
-}
+
 
 h1:focus {
     outline: none;
