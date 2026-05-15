@@ -1,4 +1,14 @@
-﻿/* ── Color Palette ── */
+﻿
+@font-face {
+    font-family: 'OceansideTypewriter';
+    src: url('../fonts/OceansideTypewriter.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+.typewriter-text {
+    font-family: 'OceansideTypewriter', 'Courier New', monospace;
+}
+/* ── Color Palette ── */
 :root {
     --cream: #faf7f2;
     --blush: #f2e0d9;
@@ -17,7 +27,7 @@
     padding: 0;
 }
 body {
-    font-family: 'Space Grotesk', sans-serif;
+    font-family: 'OceansideTypewriter', 'Courier New', monospace;
     background-color: var(--cream);
     color: var(--text);
 }
